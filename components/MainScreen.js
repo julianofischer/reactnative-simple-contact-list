@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SigninScreen from './SigninScreen.js';
 import SignupScreen from './SignupScreen.js';
 import ListContactsScreen from './ListContactsScreen.js';
+import ContactScreen from './ContactScreen.js';
 
 const Stack = createNativeStackNavigator();
 
@@ -42,6 +43,7 @@ class MainScreen extends Component {
           <Stack.Screen name="Sign in" component={SigninScreen} />
           <Stack.Screen name="Sign up" component={SignupScreen} />
           <Stack.Screen name="List contacts" component={ListContactsScreen} />
+          <Stack.Screen name="Contact details" component={ContactScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     );

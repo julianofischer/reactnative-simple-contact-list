@@ -5,34 +5,45 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as SQLite from 'expo-sqlite';
+import { Directions } from 'react-native-gesture-handler';
 const db = SQLite.openDatabase('fooapp.db');
 
-const Stack = createNativeStackNavigator();
-
 class ContactItemComponent extends Component {
+    onPressCallback = () => {
+        let name, phone, myKey;
+        name = this.props.name;
+        phone = this.props.phone;
+        myKey = this.props.myKey; //key is never a prop
+        console.log(this.props);
+        this.props.navigation.navigate('Contact details', {
+            name: name,
+            phone: phone,
+            myKey: myKey,
+        });
+    }
     render() {
         return (
-            <View>
-                <TouchableHighlight>
+            <TouchableHighlight onPress={this.onPressCallback}>
+                <>
                     <View style={styles.rowContainer}>
-                        <View style={styles.columnContainer}>
+                        <View style={[styles.columnContainer, { width: '50vw' }]}>
                             <Text style={styles.txtName}>{this.props.name}</Text>
                             <Text style={styles.txtPhone}>{this.props.phone}</Text>
                         </View>
                         <Icon name="subdirectory-arrow-right" size={20} color="gray" ></Icon>
                     </View>
-                </TouchableHighlight>
-                <View
-                    style={{
-                        borderBottomColor: 'lightgray',
-                        borderBottomWidth: 1,
-                        width: "95vw",
-                        marginTop: 5,
-                        marginLeft: "auto",
-                        marginRight: "auto",
-                    }}
-                />
-            </View>
+                    <View
+                        style={{
+                            borderBottomColor: 'lightgray',
+                            borderBottomWidth: 1,
+                            width: "95vw",
+                            marginTop: 5,
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                        }}
+                    />
+                </>
+            </TouchableHighlight>
         )
     }
 }
@@ -45,22 +56,23 @@ class ListContactsScreen extends Component {
         db.transaction(tx => {
             let q = "SELECT * FROM contatos;";
             tx.executeSql(q, [], (t, results) => {
-                this.setState({data: results.rows});
+                this.setState({ data: results.rows });
             }, (t, error) => {
                 console.log("Erro ao buscar contatos");
             });
         });
+        console.log(this.props);
     }
 
     renderContactItem = ({ item }) => {
         return (
-            <View >
-                <ContactItemComponent
-                    name={item.nome}
-                    phone={item.telefone}
-                    key={item.id}
-                />
-            </View>
+            <ContactItemComponent
+                name={item.nome}
+                phone={item.telefone}
+                key={item.id}
+                myKey={item.id}
+                navigation={this.props.navigation}
+            />
         )
     }
 
@@ -81,6 +93,7 @@ class ListContactsScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         display: 'flex',
+        flex: 1,
         marginTop: "1vh",
         marginBottom: "1vh",
         marginLeft: "1vw",
@@ -97,7 +110,11 @@ const styles = StyleSheet.create({
     },
     column: {
         display: "flex",
+        flex: 1,
         justifyContent: "center",
+        flexDirection: 'column',
+        alignItems: 'center',
+        backgroundColor: 'white',
     },
     rowContainer: {
         display: "flex",

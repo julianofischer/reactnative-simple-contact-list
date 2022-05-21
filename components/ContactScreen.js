@@ -54,15 +54,27 @@ class ContactDetailComponent extends Component {
 }
 
 class ContactScreen extends Component {
+    state = {
+        name: '',
+        phone: '',
+        key: '',
+    }
+
+    componentDidMount() {
+        let name, phone, key;
+        name = this.props.route.params.name;
+        phone = this.props.route.params.phone;
+        key = this.props.route.params.key;
+        this.setState({ name: name, phone: phone, key: key });
+    }
+
     render() {
         return (
-            <View style={styles.column}>
-                <ContactDetailComponent
-                    name="Juliano"
-                    phone="Phone"
-                    key="1"
-                />
-            </View>
+            <ContactDetailComponent
+                name={this.state.name}
+                phone={this.state.phone}
+                key={this.state.key}
+            />
         );
     }
 }
@@ -74,6 +86,8 @@ const styles = StyleSheet.create({
         alignContent: "center",
         alignItems: "center",
         flexDirection: "column",
+        backgroundColor: 'white',
+        flex: 1,
     },
     rowContainer: {
         display: "flex",
