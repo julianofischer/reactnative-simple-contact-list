@@ -1,20 +1,42 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from 'react';
+import {Text} from 'react-native'
+import MainScreen from './components/MainScreen.js';
+import ListContactsScreen from './components/ListContactsScreen.js';
+import ContactScreen from './components/ContactScreen.js';
+import SignupScreen from './components/SignupScreen.js';
+import SigninScreen from './components/SigninScreen.js';
+import AddContactScreen from './components/AddContactScreen.js';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+class App extends Component {
+  state = {
+    x: true,
+  }
+
+  render() {
+    return (
+      /*<ListContactsScreen
+      data={[
+        {
+          name: "Juliano",
+          phone: "xx - xxxx xxxx",
+          key: 1
+        },
+        {
+          name: "Juliano 2",
+          phone: "22 - 22222 2222",
+          key: 2
+        },
+        {
+          name: "Witilan",
+          phone: "xx - 22222 2222",
+          key: 3
+        },
+      ]}
+    />*/
+      <ListContactsScreen/>
+    )
+  };
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
+export default App;
