@@ -2,6 +2,9 @@ import { Component } from 'react';
 import { StyleSheet } from 'react-native';
 import { View, TouchableHighlight, Text, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Dimensions } from 'react-native';
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 class ContactDetailComponent extends Component {
     editPressed = () => {
@@ -98,37 +101,37 @@ const styles = StyleSheet.create({
     },
     txtTitle: {
         color: 'black',
-        fontSize: '7vw',
+        fontSize: windowWidth*0.07,
     },
     txtName: {
         fontWeight: "bold",
-        fontSize: '8vw'
+        fontSize: windowWidth*0.08,
     },
     txtPhone: {
         color: 'gray',
-        fontSize: '5.5vw',
+        fontSize: windowWidth*0.05,
     },
     editBtn: {
-        borderRadius: '5px',
+        borderRadius: 5,
         backgroundColor: 'blue',
         color: 'white',
         textAlign: 'center',
-        width: '13vw',
-        fontSize: '4.0vw',
-        margin: '10px',
-        padding: '8px'
+        width: windowWidth*0.13,
+        fontSize: windowWidth*0.04,
+        margin: windowWidth*0.1,
+        padding: 8
     },
     deleteBtn: {
-        borderRadius: '5px',
+        borderRadius: 5,
         backgroundColor: 'red',
         color: 'white',
         textAlign: 'center',
-        width: '16vw',
-        fontSize: '4.0vw',
-        padding: '8px'
+        width: windowWidth*0.16,
+        fontSize: windowWidth*0.04,
+        padding: 8
     },
     btn: {
-        height: '5vw'
+        height: windowWidth*0.05,
     }
 });
 export default ContactScreen;

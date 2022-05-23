@@ -50,6 +50,7 @@ class SigninScreen extends Component {
           value={this.state.email}
           textContentType='emailAddress'
           onChangeText={(text) => this.emailChanged(text)}
+          onFocus={(e) => this.setState({email:''})}
         />
 
         <TextInput
@@ -58,6 +59,7 @@ class SigninScreen extends Component {
           placeholder='Digite a senha'
           onChangeText={text => this.passwordChanged(text)}
           secureTextEntry={true}
+          onFocus={(e) => this.setState({senha:''})}
         />
 
         <TouchableHighlight
@@ -66,6 +68,8 @@ class SigninScreen extends Component {
         >
           <Text style={styles.btnText}>Entrar</Text>
         </TouchableHighlight>
+
+        <Text style={{marginTop:10, marginBottom:10}}>ou continue com</Text>
 
         {/*
         <ErrorListComponent

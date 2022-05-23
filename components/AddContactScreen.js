@@ -9,15 +9,15 @@ const windowHeight = Dimensions.get('window').height;
 class AddContactScreen extends Component {
     componentDidMount() {
         db.transaction(tx => {
-          //tx.executeSql("DROP TABLE usuarios;");
-          tx.executeSql("CREATE TABLE IF NOT EXISTS contatos (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, telefone TEXT);");
+            //tx.executeSql("DROP TABLE usuarios;");
+            tx.executeSql("CREATE TABLE IF NOT EXISTS contatos (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, telefone TEXT);");
         }, error => {
-          console.log("error call back : " + JSON.stringify(error));
-          console.log(error);
+            console.log("error call back : " + JSON.stringify(error));
+            console.log(error);
         }, () => {
-          console.log('table created')
+            console.log('table created')
         });
-      }
+    }
 
     state = {
         nome: 'Digite o nome',
@@ -25,17 +25,20 @@ class AddContactScreen extends Component {
         success: [],
     }
 
-    insere = () =>{
+    insere = () => {
         db.transaction(tx => {
-           //tx.executeSql("DROP TABLE usuarios;");
-           let query = `INSERT INTO contatos (nome, telefone) VALUES (?, ?);`;
-           tx.executeSql(query, [this.state.nome, this.state.telefone], (t, r) => {
-               let msg = "Contato inserido com sucesso!"
-               this.setState({success: [{key: msg, message: msg}]});
-           }, (t, error) => { 
-               console.log(error);
-           }
-           );
+            //tx.executeSql("DROP TABLE usuarios;");
+            let query = `INSERT INTO contatos (nome, telefone) VALUES (?, ?);`;
+            console.log(query);
+            tx.executeSql(query, [this.state.nome, this.state.telefone], (t, r) => {
+                let msg = "Contato inserido com sucesso!"
+                this.setState({ success: [{ key: msg, message: msg }] });
+                console.log(msg);
+                this.props.navigation.navigate('List contacts', {update: true});
+            }, (t, error) => {
+                console.log(error);
+            }
+            );
         })
     }
 
@@ -56,27 +59,29 @@ class AddContactScreen extends Component {
                         style={styles.input}
                         value={this.state.nome}
                         onChangeText={(text) => this.nomeChanged(text)}
+                        onFocus={()=>this.setState({nome: ''})}
                     />
 
                     <TextInput
                         style={styles.input}
                         value={this.state.telefone}
                         onChangeText={(text) => this.telefoneChanged(text)}
+                        onFocus={()=>this.setState({telefone: ''})}
                     />
 
                     <TouchableHighlight
                         style={[styles.btn, styles.columnContainer]}
                         onPress={this.insere}
                     >
-                        <Text style={styles.btnText}>Continuar</Text>
+                        <Text style={styles.btnText}>Adicionar</Text>
                     </TouchableHighlight>
                 </View>
 
-                <ErrorListComponent
+                {/*<ErrorListComponent
                     icone="check-circle"
                     color="blue"
                     data={this.state.success}
-                />
+                />*/}
             </View>
         );
     }
@@ -86,10 +91,10 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         flex: 1,
-        marginTop: windowHeight*0.01,
-        marginBottom: windowHeight*0.01,
-        marginLeft: windowWidth*0.01,
-        marginRight: windowWidth*0.01,
+        marginTop: windowHeight * 0.1,
+        marginBottom: windowHeight * 0.01,
+        marginLeft: windowWidth * 0.01,
+        marginRight: windowWidth * 0.01,
         alignContent: 'center',
         flexDirection: 'column',
         alignItems: 'center',
@@ -121,9 +126,9 @@ const styles = StyleSheet.create({
     },
     title: {
         fontWeight: 'bold',
-        fontSize: windowHeight*0.03,
-        marginLeft: windowWidth*0.05,
-        marginBottom: windowHeight*0.03
+        fontSize: windowHeight * 0.03,
+        marginLeft: windowWidth * 0.05,
+        marginBottom: windowHeight * 0.03
     },
     btn: {
         borderRadius: 10,

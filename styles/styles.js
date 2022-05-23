@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     line: {
       borderBottomColor: 'black',
       borderBottomWidth: StyleSheet.hairlineWidth,
-      width: '50%'
+      width: 0.5,
     }
   });
 
