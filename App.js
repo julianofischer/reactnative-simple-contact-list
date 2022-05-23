@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Text} from 'react-native'
+import {Text, Platform} from 'react-native'
 import MainScreen from './components/MainScreen.js';
 import ListContactsScreen from './components/ListContactsScreen.js';
 import ContactScreen from './components/ContactScreen.js';
@@ -13,6 +13,7 @@ class App extends Component {
   }
 
   render() {
+    console.log(Platform.OS);
     return (
       /*<ListContactsScreen
       data={[

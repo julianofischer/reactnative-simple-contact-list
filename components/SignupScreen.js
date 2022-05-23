@@ -6,16 +6,6 @@ import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('fooapp.db');
 import md5 from 'md5';
 
-class AgreementWarningComponent extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text>Você deve concordar com os termos de serviços e condições.</Text>
-      </View>
-    );
-  }
-}
-
 class SignupScreen extends Component {
   state = {
     email: 'Digite o e-mail',
@@ -142,7 +132,6 @@ class SignupScreen extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Sign Up</Text>
-        {this.state.displayAgreementWarning && <AgreementWarningComponent />}
         <TextInput
           style={styles.input}
           value={this.state.email}
@@ -154,14 +143,16 @@ class SignupScreen extends Component {
           value={this.state.senha}
           placeholder='Digite a senha'
           onChangeText={text => this.passwordChanged(text)}
-          secureTextEntry="true"
+          autoCorrect={false}
+          secureTextEntry={true}
         />
         <TextInput
           style={styles.input}
           value={this.state.confirmSenha}
           placeholder='Digite a senha'
           onChangeText={text => this.confirmPasswordChanged(text)}
-          secureTextEntry="true"
+          autoCorrect={false}
+          secureTextEntry={true}
         />
 
         <View style={styles.rowContainer}>
@@ -184,6 +175,7 @@ class SignupScreen extends Component {
           <Text style={styles.btnText}>Continuar</Text>
         </TouchableHighlight>
 
+        {/*
         <ErrorListComponent
           icone="alert-circle"
           color="red"
@@ -194,7 +186,7 @@ class SignupScreen extends Component {
           icone="check-circle"
           color="blue"
           data={this.state.success}
-        />
+        />*/}
       </View>
     );
   }

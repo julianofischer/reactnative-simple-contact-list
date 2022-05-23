@@ -7,6 +7,10 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as SQLite from 'expo-sqlite';
 import { Directions } from 'react-native-gesture-handler';
 const db = SQLite.openDatabase('fooapp.db');
+import { Dimensions } from 'react-native';
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 class ContactItemComponent extends Component {
     onPressCallback = () => {
@@ -94,10 +98,10 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         flex: 1,
-        marginTop: "1vh",
-        marginBottom: "1vh",
-        marginLeft: "1vw",
-        marginRight: "1vw",
+        marginTop: windowHeight/100,
+        marginBottom: windowHeight/100,
+        marginLeft: windowWidth/100,
+        marginRight: windowHeight/100,
         alignContent: 'center',
         flexDirection: 'row',
     },
@@ -131,16 +135,16 @@ const styles = StyleSheet.create({
     },
     title: {
         fontWeight: 'bold',
-        fontSize: '3vh',
-        marginLeft: '5vw',
-        marginBottom: '2vh'
+        fontSize: 0.03*windowHeight,
+        marginLeft: 0.05*windowWidth,
+        marginBottom: 0.02*windowHeight
     },
     btn: {
-        borderRadius: '10px',
+        borderRadius: 10,
         backgroundColor: '#0373F3',
-        width: '250px',
-        height: '30px',
-        margin: '5px'
+        width: 250,
+        height: 30,
+        margin: 5
     },
     btnText: {
         color: "white",

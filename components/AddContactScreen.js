@@ -1,8 +1,10 @@
 import { Component } from 'react';
-import { StyleSheet, Text, TouchableHighlight, View, TextInput } from 'react-native';
+import { StyleSheet, Text, TouchableHighlight, View, TextInput, Dimensions } from 'react-native';
 import ErrorListComponent from './ErrorListComponent';
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('fooapp.db');
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 class AddContactScreen extends Component {
     componentDidMount() {
@@ -84,10 +86,10 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         flex: 1,
-        marginTop: "1vh",
-        marginBottom: "1vh",
-        marginLeft: "1vw",
-        marginRight: "1vw",
+        marginTop: windowHeight*0.01,
+        marginBottom: windowHeight*0.01,
+        marginLeft: windowWidth*0.01,
+        marginRight: windowWidth*0.01,
         alignContent: 'center',
         flexDirection: 'column',
         alignItems: 'center',
@@ -119,16 +121,16 @@ const styles = StyleSheet.create({
     },
     title: {
         fontWeight: 'bold',
-        fontSize: '3vh',
-        marginLeft: '5vw',
-        marginBottom: '2vh'
+        fontSize: windowHeight*0.03,
+        marginLeft: windowWidth*0.05,
+        marginBottom: windowHeight*0.03
     },
     btn: {
-        borderRadius: '10px',
+        borderRadius: 10,
         backgroundColor: '#0373F3',
-        width: '250px',
-        height: '30px',
-        margin: '5px'
+        width: 250,
+        height: 30,
+        margin: 5
     },
     btnText: {
         color: "white",

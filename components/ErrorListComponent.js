@@ -1,13 +1,16 @@
 import { Component } from 'react';
 import { StyleSheet } from 'react-native';
-import { View, Text, FlatList } from 'react-native';
+import { Dimensions, View, Text, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 class ErrorItemComponent extends Component {
     render() {
         return (
             <View style={styles.row}>
-                <Icon name={this.props.icone} size={'3vw'} color={this.props.color}></Icon>
+                <Icon name={this.props.icone} size={windowWidth*0.04} color={this.props.color}></Icon>
                 <Text 
                     style={[styles.message, {color: this.props.color}]}
                 >
@@ -58,7 +61,7 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     message: {
-        fontSize: '3vw',
+        fontSize: windowWidth*0.03,
     },
 });
 
