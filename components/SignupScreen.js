@@ -1,6 +1,6 @@
 import styles from "../styles/styles.js";
 import { Component } from 'react';
-import { View, Text, TextInput, TouchableHighlight, Switch } from 'react-native';
+import { View, Text, TextInput, TouchableHighlight, Switch, Alert } from 'react-native';
 import ErrorListComponent from "./ErrorListComponent.js";
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('fooapp.db');
@@ -21,6 +21,9 @@ class SignupScreen extends Component {
     db.transaction(tx => {
       //tx.executeSql("DROP TABLE usuarios;");
       tx.executeSql("CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE, senha TEXT);");
+      tx.executeSql("SELECT * FROM usuarios;", [], (t, result) => {
+        console.log(result);
+      });
     }, error => {
       console.log("error call back : " + JSON.stringify(error));
       console.log(error);
@@ -77,7 +80,7 @@ class SignupScreen extends Component {
       //  return { errors: [...prevState.errors, { key: msg, message: msg }] }
       //})
       let msg = "Você deve concordar com os termos de serviço.";
-      a.push({key: msg, message: msg})
+      a.push({ key: msg, message: msg })
     }
 
     if (this.state.email.length == 0 || !this.validateEmail(this.state.email)) {
@@ -106,24 +109,40 @@ class SignupScreen extends Component {
       let msg = "A senha e a confirmação de senha devem ser iguais!";
       a.push({ key: msg, message: msg });
     }
-    
+
     if (a.length > 0) {
       this.setState({ errors: a });
     } else {
       db.transaction(tx => {
-        const query = `INSERT INTO usuarios (email, senha) VALUES ('${this.state.email}', '${md5(this.state.confirmSenha)}') ;`
-        console.log(query);
+        const query = `INSERT INTO usuarios (email, senha) VALUES ('${this.state.email}', '${md5(this.state.confirmSenha)}');`
         tx.executeSql(query, [], (t, result) => {
+          console.log('inserido com sucesso: ' + result);
           let msg = "Inserido com sucesso!"
-          this.setState({success: [{key: msg, message: msg}]})
+          this.setState({ success: [{ key: msg, message: msg }] });
+          Alert.alert(
+            "Sucesso",
+            "Usuário cadastrado com sucesso!",
+            [
+              {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel"
+              },
+              { text: "OK", onPress: () => this.props.navigation.navigate('Sign in')}
+            ]
+          );
         }, (t, error) => {
-          if(error.code === 6){
-            this.setState((prevState)=>{
+          if (error.code === 6) {
+            console.log('erro ao cadastrar');
+            this.setState((prevState) => {
               let msg = "O e-mail já está cadastrado!"
-              return { errors: [...prevState.errors, {key: msg, message: msg }] }
+              return { errors: [...prevState.errors, { key: msg, message: msg }] }
             });
           }
         });
+      }, (error) => {
+        //error callback para transaction
+        console.log("Erro na transação " + error);
       });
     }
   }
@@ -137,6 +156,7 @@ class SignupScreen extends Component {
           value={this.state.email}
           textContentType='emailAddress'
           onChangeText={(text) => this.emailChanged(text)}
+          onFocus={() => this.setState({email: ''})}
         />
         <TextInput
           style={styles.input}
@@ -145,6 +165,7 @@ class SignupScreen extends Component {
           onChangeText={text => this.passwordChanged(text)}
           autoCorrect={false}
           secureTextEntry={true}
+          onFocus={()=>this.setState({senha: ''})}
         />
         <TextInput
           style={styles.input}
@@ -153,12 +174,13 @@ class SignupScreen extends Component {
           onChangeText={text => this.confirmPasswordChanged(text)}
           autoCorrect={false}
           secureTextEntry={true}
+          onFocus={()=>this.setState({confirmSenha: ''})}
         />
 
         <View style={styles.rowContainer}>
           <Switch
             trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={this.isEnabled() ? "#f5dd4b" : "#f4f3f4"}
+            thumbColor={this.isEnabled() ? "#0373F3" : "#f4f3f4"}
             ios_backgroundColor="#3e3e3e"
             onValueChange={() => this.toggleSwitch()}
             value={this.isEnabled()}
@@ -174,19 +196,20 @@ class SignupScreen extends Component {
         >
           <Text style={styles.btnText}>Continuar</Text>
         </TouchableHighlight>
-
-        {/*
-        <ErrorListComponent
-          icone="alert-circle"
-          color="red"
-          data={this.state.errors}
-        />
-
-        <ErrorListComponent
-          icone="check-circle"
-          color="blue"
-          data={this.state.success}
-        />*/}
+        {!!this.state.errors.length &&
+          <ErrorListComponent
+            icone="alert-circle"
+            color="red"
+            data={this.state.errors}
+          />
+        }
+        {!!this.state.success.length &&
+          <ErrorListComponent style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}
+            icone="check-circle"
+            color="blue"
+            data={this.state.success}
+          />
+        }
       </View>
     );
   }
