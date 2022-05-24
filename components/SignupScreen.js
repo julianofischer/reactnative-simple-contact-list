@@ -27,8 +27,8 @@ class SignupScreen extends Component {
     }, error => {
       console.log("error call back : " + JSON.stringify(error));
       console.log(error);
-    }, () => {
-      console.log('table created')
+    }, (what) => {
+      console.log('table created: ' + what)
     });
   }
 
@@ -72,40 +72,25 @@ class SignupScreen extends Component {
 
   validate = () => {
     this.setState({ errors: [] });
+    console.log("validate called");
 
     let a = [];
     if (!this.state.enabled) {
-      //this.setState(prevState => {
-      //  let msg = "Você deve concordar com os termos de serviço."
-      //  return { errors: [...prevState.errors, { key: msg, message: msg }] }
-      //})
       let msg = "Você deve concordar com os termos de serviço.";
       a.push({ key: msg, message: msg })
     }
 
     if (this.state.email.length == 0 || !this.validateEmail(this.state.email)) {
-      // this.setState(prevState => {
-      //   let msg = "Digite um email válido!";
-      //   return { errors: [...prevState.errors, { key: msg, message: msg }] }
-      // })
       let msg = "Digite um email válido!";
       a.push({ key: msg, message: msg });
     }
 
     if (this.state.senha.length == 0 || this.state.confirmSenha == 0) {
-      // this.setState(prevState => {
-      //   let msg = "Digite a senha e a confirmação da senha!";
-      //   return { errors: [...prevState.errors, { key: msg, message: msg }] }
-      // })
       let msg = "Digite a senha e a confirmação da senha!";
       a.push({ key: msg, message: msg });
     }
 
     if (this.state.senha !== this.state.confirmSenha) {
-      // this.setState(prevState => {
-      //   let msg = "A senha e a confirmação de senha devem ser iguais!";
-      //   return { errors: [...prevState.errors, { key: msg, message: msg }] }
-      // })
       let msg = "A senha e a confirmação de senha devem ser iguais!";
       a.push({ key: msg, message: msg });
     }
@@ -113,6 +98,7 @@ class SignupScreen extends Component {
     if (a.length > 0) {
       this.setState({ errors: a });
     } else {
+      console.log('before transaction');
       db.transaction(tx => {
         const query = `INSERT INTO usuarios (email, senha) VALUES ('${this.state.email}', '${md5(this.state.confirmSenha)}');`
         tx.executeSql(query, [], (t, result) => {
@@ -128,21 +114,21 @@ class SignupScreen extends Component {
                 onPress: () => console.log("Cancel Pressed"),
                 style: "cancel"
               },
-              { text: "OK", onPress: () => this.props.navigation.navigate('Sign in')}
+              { text: "OK", onPress: () => this.props.navigation.navigate('Sign in') }
             ]
           );
-        }, (t, error) => {
-          if (error.code === 6) {
-            console.log('erro ao cadastrar');
-            this.setState((prevState) => {
-              let msg = "O e-mail já está cadastrado!"
-              return { errors: [...prevState.errors, { key: msg, message: msg }] }
-            });
-          }
-        });
-      }, (error) => {
-        //error callback para transaction
-        console.log("Erro na transação " + error);
+        }, (sqlError) => {
+          this.setState((prevState) => {
+            let msg = "Não foi possível cadastrar."
+            return { errors: [...prevState.errors, { key: msg, message: msg }] }
+          });
+        }
+        );
+      }, (txError) => {
+        console.log('tx error ')
+        console.log(txError)
+      }, () => {
+        console.log('sucesso na transação')
       });
     }
   }
@@ -156,7 +142,7 @@ class SignupScreen extends Component {
           value={this.state.email}
           textContentType='emailAddress'
           onChangeText={(text) => this.emailChanged(text)}
-          onFocus={() => this.setState({email: ''})}
+          onFocus={() => this.setState({ email: '' })}
         />
         <TextInput
           style={styles.input}
@@ -165,7 +151,7 @@ class SignupScreen extends Component {
           onChangeText={text => this.passwordChanged(text)}
           autoCorrect={false}
           secureTextEntry={true}
-          onFocus={()=>this.setState({senha: ''})}
+          onFocus={() => this.setState({ senha: '' })}
         />
         <TextInput
           style={styles.input}
@@ -174,7 +160,7 @@ class SignupScreen extends Component {
           onChangeText={text => this.confirmPasswordChanged(text)}
           autoCorrect={false}
           secureTextEntry={true}
-          onFocus={()=>this.setState({confirmSenha: ''})}
+          onFocus={() => this.setState({ confirmSenha: '' })}
         />
 
         <View style={styles.rowContainer}>

@@ -28,10 +28,12 @@ class ContactItemComponent extends Component {
     }
     render() {
         return (
-            <TouchableHighlight onPress={this.onPressCallback}>
+            <TouchableHighlight 
+            underlayColor="#DDD"
+            onPress={this.onPressCallback}>
                 <>
                     <View style={styles.rowContainer}>
-                        <View style={[styles.columnContainer]}>
+                        <View style={styles.itemColumn}>
                             <Text style={styles.txtName}>{this.props.name}</Text>
                             <Text style={styles.txtPhone}>{this.props.phone}</Text>
                         </View>
@@ -92,17 +94,28 @@ class ListContactsScreen extends Component {
         }
     }
 
+    renderSeparator = () => (
+        <View
+          style={{
+            backgroundColor: 'black',
+            height: 0.5,
+          }}
+        />
+      );
+
     buttonPressed = () => {
         this.props.navigation.navigate('Add Contact');
     }
     render() {
         return (
-            <View style={styles.column}>
+            <View style={[styles.column, {scrollEnabled: true}]}>
                 <Text style={styles.title}>Contato</Text>
                 <FlatList
-                    style={styles.container}
+                    contentContainerStyle={styles.contentContainerStyle}
+                    style={[styles.list]}
                     data={this.state.data}
                     renderItem={this.renderContactItem}
+                    ItemSeparatorComponent={this.renderSeparator}
                 />
                 <TouchableHighlight
                     style={[styles.btn, styles.columnContainer]}
@@ -118,7 +131,6 @@ class ListContactsScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         display: 'flex',
-        flex: 1,
         marginTop: windowHeight / 100,
         marginBottom: windowHeight / 100,
         marginLeft: windowWidth / 100,
@@ -126,12 +138,19 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         flexDirection: 'row',
     },
+    list:{
+        width: windowWidth*.8,
+    },
     columnContainer: {
         display: "flex",
         justifyContent: "center",
         alignContent: "center",
         alignItems: "center",
         flexDirection: "column",
+    },
+    itemColumn: {
+        display: "flex",
+        justifyContent: "flex-start"
     },
     column: {
         display: "flex",
@@ -143,7 +162,7 @@ const styles = StyleSheet.create({
     },
     rowContainer: {
         display: "flex",
-        justifyContent: "space-around",
+        justifyContent: "space-between",
         alignItems: "center",
         flexDirection: "row",
         marginTop: 5,

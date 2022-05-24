@@ -42,14 +42,21 @@ class ContactDetailComponent extends Component {
     render() {
         return (
             <View style={styles.columnContainer}>
-                <Text style={styles.txtTitle}>Contato</Text>
+                <Text style={styles.txtName}>{this.props.name}</Text>
+                <Text style={styles.txtPhone}>{this.props.phone}</Text>
+
                 <View style={styles.rowContainer}>
-                    <View style={styles.columnContainer}>
-                        <Text style={styles.txtName}>{this.props.name}</Text>
-                        <Text style={styles.txtPhone}>{this.props.phone}</Text>
-                    </View>
-                    <TouchableHighlight onPress={this.editPressed}><Text style={styles.editBtn}>edit</Text></TouchableHighlight>
-                    <TouchableHighlight onPress={this.deletePressed}><Text style={styles.deleteBtn}>delete</Text></TouchableHighlight>
+                    <TouchableHighlight 
+                        onPress={this.editPressed}
+                        underlayColor="none">
+                            <Text style={styles.editBtn}>edit</Text>
+                    </TouchableHighlight>
+
+                    <TouchableHighlight 
+                        underlayColor="none"
+                        onPress={this.deletePressed}>
+                            <Text style={styles.deleteBtn}>delete</Text>
+                    </TouchableHighlight>
                 </View>
             </View>
         )
@@ -94,31 +101,27 @@ const styles = StyleSheet.create({
     },
     rowContainer: {
         display: "flex",
-        justifyContent: "space-around",
+        justifyContent: "center",
         alignItems: "center",
+        alignContent: 'center',
         flexDirection: "row",
-        marginTop: 5,
-    },
-    txtTitle: {
-        color: 'black',
-        fontSize: windowWidth*0.07,
     },
     txtName: {
         fontWeight: "bold",
-        fontSize: windowWidth*0.08,
+        fontSize: windowWidth * 0.08,
     },
     txtPhone: {
         color: 'gray',
-        fontSize: windowWidth*0.05,
+        fontSize: windowWidth * 0.05,
     },
     editBtn: {
         borderRadius: 5,
         backgroundColor: 'blue',
         color: 'white',
         textAlign: 'center',
-        width: windowWidth*0.13,
-        fontSize: windowWidth*0.04,
-        margin: windowWidth*0.1,
+        width: windowWidth * 0.18,
+        fontSize: windowWidth * 0.04,
+        margin: 2,
         padding: 8
     },
     deleteBtn: {
@@ -126,12 +129,13 @@ const styles = StyleSheet.create({
         backgroundColor: 'red',
         color: 'white',
         textAlign: 'center',
-        width: windowWidth*0.16,
-        fontSize: windowWidth*0.04,
-        padding: 8
+        width: windowWidth * 0.18,
+        fontSize: windowWidth * 0.04,
+        padding: 8,
+        margin: 2,
     },
     btn: {
-        height: windowWidth*0.05,
+        height: windowWidth * 0.05,
     }
 });
 export default ContactScreen;

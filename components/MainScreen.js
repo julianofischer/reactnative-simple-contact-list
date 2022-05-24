@@ -8,6 +8,7 @@ import SignupScreen from './SignupScreen.js';
 import ListContactsScreen from './ListContactsScreen.js';
 import ContactScreen from './ContactScreen.js';
 import AddContactScreen from './AddContactScreen.js';
+import { Platform } from 'react-native-web';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +17,7 @@ class MainScreenComponent extends Component{
       return(
           <View style={styles.container}>
           <Text style={styles.title}>Foo App</Text>
+          <Text>{Platform.OS}</Text>
           <TouchableHighlight
             style={[styles.btn, styles.columnContainer]}
             onPress={() => this.props.navigation.navigate('Sign in')}
