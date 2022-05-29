@@ -1,11 +1,5 @@
 import React, { Component } from 'react';
-import {Text, Platform} from 'react-native'
 import MainScreen from './components/MainScreen.js';
-import ListContactsScreen from './components/ListContactsScreen.js';
-import ContactScreen from './components/ContactScreen.js';
-import SignupScreen from './components/SignupScreen.js';
-import SigninScreen from './components/SigninScreen.js';
-import AddContactScreen from './components/AddContactScreen.js';
 
 class App extends Component {
   state = {
@@ -13,7 +7,6 @@ class App extends Component {
   }
 
   render() {
-    console.log(Platform.OS);
     return (
       /*<ListContactsScreen
       data={[

@@ -29,13 +29,15 @@ class SigninScreen extends Component {
       console.log(query);
       tx.executeSql(query, [], (_, result) => {
         if (result.rows.length > 0) {
-          this.props.navigation.navigate('List contacts');
+          let user_id = result.rows._array[0].id
+          console.log(result.rows._array)
+          this.props.navigation.navigate('List contacts', {user_id: user_id});
         } else {
-          let msg = "Usuário ou senha inválidos."
+          let msg = "Invalid user or password."
           this.setState({ errors: [{ key: msg, message: msg }] })
         }
       }, (_, error) => {
-        let msg = "Erro ao comunicar com banco de dados."
+        let msg = "Error while contacting the database"
         this.setState({ errors: [{ key: msg, message: msg }] })
       });
     });
@@ -56,7 +58,7 @@ class SigninScreen extends Component {
         <TextInput
           style={styles.input}
           value={this.state.senha}
-          placeholder='Digite a senha'
+          placeholder='Enter the password'
           onChangeText={text => this.passwordChanged(text)}
           secureTextEntry={true}
           onFocus={(e) => this.setState({ senha: '' })}
@@ -66,7 +68,7 @@ class SigninScreen extends Component {
           style={[styles.btn, styles.columnContainer]}
           onPress={this.buttonPressed}
         >
-          <Text style={styles.btnText}>Entrar</Text>
+          <Text style={styles.btnText}>Sign In</Text>
         </TouchableHighlight>
 
         {!!this.state.errors.length &&
@@ -77,20 +79,20 @@ class SigninScreen extends Component {
           />
         }
 
-        <Text style={{ marginTop: 10, marginBottom: 10 }}>ou continue com</Text>
+        <Text style={{ marginTop: 10, marginBottom: 10 }}>or continue with</Text>
 
         <View>
           <TouchableHighlight style={styles.btnGoogle}>
             <View style={styles.rowContainer}>
               <Icon name="google-chrome" size={20} color="#000" />
-              <Text style={[styles.btnText, { color: 'black' }]}> Entrar com Google</Text>
+              <Text style={[styles.btnText, { color: 'black' }]}> Continue with Google</Text>
             </View>
           </TouchableHighlight>
 
           <TouchableHighlight style={styles.btnFB}>
             <View style={styles.rowContainer}>
               <Icon name="facebook" size={20} color="#FFF" />
-              <Text style={[styles.btnText]}> Entrar com Facebook</Text>
+              <Text style={[styles.btnText]}> Continue with Facebook</Text>
             </View>
           </TouchableHighlight>
         </View>

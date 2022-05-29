@@ -1,16 +1,38 @@
 import { Component } from 'react';
 import { StyleSheet, Text, TouchableHighlight, View, TextInput, Dimensions } from 'react-native';
-import ErrorListComponent from './ErrorListComponent';
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('fooapp.db');
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 class AddContactScreen extends Component {
+    state = {
+        nome: 'Digite o nome',
+        telefone: 'Digite o telefone',
+        success: [],
+        key: undefined,
+        btnLabel: 'Add',
+        title: 'Add Contact',
+        editMode: false,
+    }
+
     componentDidMount() {
+        console.log(this.props.route.params);
+        if (this.props.route.params) {
+            let contact = this.props.route.params.contact
+            console.log(contact);
+            this.setState({
+                nome: contact.name,
+                telefone: contact.phone,
+                key: contact.key,
+                btnLabel: 'Edit',
+                title: 'Edit Contact',
+                editMode: true,
+            });
+        }
+
         db.transaction(tx => {
-            //tx.executeSql("DROP TABLE usuarios;");
-            tx.executeSql("CREATE TABLE IF NOT EXISTS contatos (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, telefone TEXT);");
+            tx.executeSql("CREATE TABLE IF NOT EXISTS contatos (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, telefone TEXT, user_id INTEGER);");
         }, error => {
             console.log("error call back : " + JSON.stringify(error));
             console.log(error);
@@ -19,22 +41,26 @@ class AddContactScreen extends Component {
         });
     }
 
-    state = {
-        nome: 'Digite o nome',
-        telefone: 'Digite o telefone',
-        success: [],
-    }
-
     insere = () => {
         db.transaction(tx => {
-            //tx.executeSql("DROP TABLE usuarios;");
-            let query = `INSERT INTO contatos (nome, telefone) VALUES (?, ?);`;
-            console.log(query);
-            tx.executeSql(query, [this.state.nome, this.state.telefone], (t, r) => {
-                let msg = "Contato inserido com sucesso!"
-                this.setState({ success: [{ key: msg, message: msg }] });
-                console.log(msg);
-                this.props.navigation.navigate('List contacts', {update: true});
+            let query;
+            let queryParams = [this.state.nome, this.state.telefone];
+            let msgAction = ''
+            if (this.state.editMode) {
+                query = `UPDATE contatos SET nome=?, telefone=? WHERE id=?;`;
+                queryParams.push(this.state.key);
+                msgAction = 'updated'
+            } else {
+                query = `INSERT INTO contatos (nome, telefone, user_id) VALUES (?, ?, ?);`;
+                queryParams.push(this.props.route.params.user_id);
+                msgAction = 'inserted'
+            }
+            
+            tx.executeSql(query, queryParams, (t, r) => {
+                let msg = `Contact sussccesfully ${msgAction}!`
+                this.setState({success: [{key: msg, message: msg }]});
+                console.log(queryParams);
+                this.props.navigation.navigate('List contacts', { update: true, user_id: this.props.route.params.user_id });
             }, (t, error) => {
                 console.log(error);
             }
@@ -53,27 +79,27 @@ class AddContactScreen extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.title}>Cadastrar Contatos</Text>
+                <Text style={styles.title}>{this.state.title}</Text>
                 <View style={styles.columnContainer}>
                     <TextInput
                         style={styles.input}
                         value={this.state.nome}
                         onChangeText={(text) => this.nomeChanged(text)}
-                        onFocus={()=>this.setState({nome: ''})}
+                        onFocus={() => !this.state.editMode ? this.setState({ nome: '' }) : ()=>{}}
                     />
 
                     <TextInput
                         style={styles.input}
                         value={this.state.telefone}
                         onChangeText={(text) => this.telefoneChanged(text)}
-                        onFocus={()=>this.setState({telefone: ''})}
+                        onFocus={() => !this.state.editMode ? this.setState({ telefone: '' }) : ()=>{}}
                     />
 
                     <TouchableHighlight
                         style={[styles.btn, styles.columnContainer]}
                         onPress={this.insere}
                     >
-                        <Text style={styles.btnText}>Adicionar</Text>
+                        <Text style={styles.btnText}>{this.state.btnLabel}</Text>
                     </TouchableHighlight>
                 </View>
 
@@ -91,14 +117,11 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         flex: 1,
-        marginTop: windowHeight * 0.1,
-        marginBottom: windowHeight * 0.01,
-        marginLeft: windowWidth * 0.01,
-        marginRight: windowWidth * 0.01,
         alignContent: 'center',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: '#FFF'
     },
     columnContainer: {
         display: "flex",

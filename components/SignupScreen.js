@@ -8,9 +8,9 @@ import md5 from 'md5';
 
 class SignupScreen extends Component {
   state = {
-    email: 'Digite o e-mail',
-    senha: 'Digite a senha',
-    confirmSenha: 'Confirme a senha',
+    email: 'Enter the e-mail',
+    senha: 'Enter the password',
+    confirmSenha: 'Enter the password confirmation',
     enabled: false,
     errors: [],
     readyToInsert: false,
@@ -21,9 +21,6 @@ class SignupScreen extends Component {
     db.transaction(tx => {
       //tx.executeSql("DROP TABLE usuarios;");
       tx.executeSql("CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE, senha TEXT);");
-      tx.executeSql("SELECT * FROM usuarios;", [], (t, result) => {
-        console.log(result);
-      });
     }, error => {
       console.log("error call back : " + JSON.stringify(error));
       console.log(error);
@@ -76,22 +73,22 @@ class SignupScreen extends Component {
 
     let a = [];
     if (!this.state.enabled) {
-      let msg = "Você deve concordar com os termos de serviço.";
+      let msg = "You must agree to the terms of service.";
       a.push({ key: msg, message: msg })
     }
 
     if (this.state.email.length == 0 || !this.validateEmail(this.state.email)) {
-      let msg = "Digite um email válido!";
+      let msg = "Enter a valid e-mail!";
       a.push({ key: msg, message: msg });
     }
 
     if (this.state.senha.length == 0 || this.state.confirmSenha == 0) {
-      let msg = "Digite a senha e a confirmação da senha!";
+      let msg = "Enter the password and password confirmation!";
       a.push({ key: msg, message: msg });
     }
 
     if (this.state.senha !== this.state.confirmSenha) {
-      let msg = "A senha e a confirmação de senha devem ser iguais!";
+      let msg = "Password and password confirmation must match!";
       a.push({ key: msg, message: msg });
     }
 
@@ -106,8 +103,8 @@ class SignupScreen extends Component {
           let msg = "Inserido com sucesso!"
           this.setState({ success: [{ key: msg, message: msg }] });
           Alert.alert(
-            "Sucesso",
-            "Usuário cadastrado com sucesso!",
+            "Success",
+            "User sussccessfully registered!",
             [
               {
                 text: "Cancel",
@@ -119,7 +116,7 @@ class SignupScreen extends Component {
           );
         }, (sqlError) => {
           this.setState((prevState) => {
-            let msg = "Não foi possível cadastrar."
+            let msg = "Unable to register user."
             return { errors: [...prevState.errors, { key: msg, message: msg }] }
           });
         }
@@ -147,7 +144,7 @@ class SignupScreen extends Component {
         <TextInput
           style={styles.input}
           value={this.state.senha}
-          placeholder='Digite a senha'
+          placeholder='Enter the password'
           onChangeText={text => this.passwordChanged(text)}
           autoCorrect={false}
           secureTextEntry={true}
@@ -156,7 +153,7 @@ class SignupScreen extends Component {
         <TextInput
           style={styles.input}
           value={this.state.confirmSenha}
-          placeholder='Digite a senha'
+          placeholder='Enter the password'
           onChangeText={text => this.confirmPasswordChanged(text)}
           autoCorrect={false}
           secureTextEntry={true}
@@ -172,7 +169,7 @@ class SignupScreen extends Component {
             value={this.isEnabled()}
           />
           <Text style={{ marginLeft: 5 }}>
-            Eu li e aceito os termos de serviço.
+           I have read and accept the terms of service.
           </Text>
         </View>
 
@@ -180,7 +177,7 @@ class SignupScreen extends Component {
           style={[styles.btn, styles.columnContainer]}
           onPress={this.validate}
         >
-          <Text style={styles.btnText}>Continuar</Text>
+          <Text style={styles.btnText}>Continue</Text>
         </TouchableHighlight>
         {!!this.state.errors.length &&
           <ErrorListComponent
@@ -189,6 +186,7 @@ class SignupScreen extends Component {
             data={this.state.errors}
           />
         }
+      
         {!!this.state.success.length &&
           <ErrorListComponent style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}
             icone="check-circle"

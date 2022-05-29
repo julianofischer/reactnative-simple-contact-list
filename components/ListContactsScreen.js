@@ -1,36 +1,37 @@
 import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
 import { View, TouchableHighlight, Text, FlatList } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as SQLite from 'expo-sqlite';
-import { Directions } from 'react-native-gesture-handler';
 const db = SQLite.openDatabase('fooapp.db');
 import { Dimensions } from 'react-native';
-import { Platform } from 'react-native-web';
+import { Platform } from 'react-native';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 class ContactItemComponent extends Component {
     onPressCallback = () => {
-        let name, phone, myKey;
+        console.log('pressing contact');
+        let name, phone, my_key;
         name = this.props.name;
         phone = this.props.phone;
-        myKey = this.props.myKey; //key is never a prop
+        my_key = this.props.my_key; //key is never a prop
+        console.log('PROPS in onpresscallback');
         console.log(this.props);
+        console.log(my_key)
         this.props.navigation.navigate('Contact details', {
             name: name,
             phone: phone,
-            myKey: myKey,
+            my_key: my_key,
         });
     }
+
     render() {
         return (
-            <TouchableHighlight 
-            underlayColor="#DDD"
-            onPress={this.onPressCallback}>
+            <TouchableHighlight
+                underlayColor="#DDD"
+                onPress={this.onPressCallback}>
                 <>
                     <View style={styles.rowContainer}>
                         <View style={styles.itemColumn}>
@@ -61,23 +62,27 @@ class ListContactsScreen extends Component {
     }
 
     componentDidMount() {
-        console.log('constructor')
+        console.log("THIS.PROPS.NAVIGATIONS " + this.props.navigation);
+        this.props.navigation.addListener('didFocus', () => {
+            console.log("FOCUSED $$$$$$$$$$$$$$$$$$$$")
+        });
+
         db.transaction(tx => {
-            let q = "SELECT * FROM contatos;";
+            let user_id = this.props.route.params.user_id;
+            let q = `SELECT * FROM contatos WHERE user_id = ${user_id};`;
+            //let q = `SELECT * FROM contatos;`;
+            console.log(q);
             tx.executeSql(q, [], (t, results) => {
-                console.log(Platform.OS)
                 if (Platform.OS === 'android') {
                     this.setState({ data: results.rows._array });
-                    console.log('DATA: ' + results.rows._array)
                 } else {
-                    this.setState({ data: results.rows._array });
+                    this.setState({ data: results.rows });
                 }
             }, (t, error) => {
                 console.log("Erro ao buscar contatos");
                 console.log(error)
             });
         });
-        console.log(this.props);
     }
 
     renderContactItem = ({ item }) => {
@@ -87,7 +92,7 @@ class ListContactsScreen extends Component {
                     name={item.nome}
                     phone={item.telefone}
                     key={item.id}
-                    myKey={item.id}
+                    my_key={item.id}
                     navigation={this.props.navigation}
                 />
             )
@@ -96,32 +101,37 @@ class ListContactsScreen extends Component {
 
     renderSeparator = () => (
         <View
-          style={{
-            backgroundColor: 'black',
-            height: 0.5,
-          }}
+            style={{
+                backgroundColor: 'black',
+                height: 0.5,
+            }}
         />
-      );
+    );
+
+    renderEmptyWarning = () => (<Text>No contacts added.</Text>)
 
     buttonPressed = () => {
-        this.props.navigation.navigate('Add Contact');
+        this.props.navigation.navigate('Add Contact', { user_id: this.props.route.params.user_id });
     }
+    
     render() {
         return (
-            <View style={[styles.column, {scrollEnabled: true}]}>
-                <Text style={styles.title}>Contato</Text>
+            <View style={[styles.column, { scrollEnabled: true }]}>
+                <Text style={styles.title}>Contacts</Text>
                 <FlatList
                     contentContainerStyle={styles.contentContainerStyle}
                     style={[styles.list]}
                     data={this.state.data}
                     renderItem={this.renderContactItem}
                     ItemSeparatorComponent={this.renderSeparator}
+                    ListEmptyComponent={this.renderEmptyWarning}
+                    extraData={this.state}
                 />
                 <TouchableHighlight
                     style={[styles.btn, styles.columnContainer]}
                     onPress={this.buttonPressed}
                 >
-                    <Text style={styles.btnText}>Cadastrar</Text>
+                    <Text style={styles.btnText}>Add</Text>
                 </TouchableHighlight>
             </View>
         );
@@ -138,8 +148,8 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         flexDirection: 'row',
     },
-    list:{
-        width: windowWidth*.8,
+    list: {
+        width: windowWidth * .8,
     },
     columnContainer: {
         display: "flex",
@@ -176,8 +186,7 @@ const styles = StyleSheet.create({
     title: {
         fontWeight: 'bold',
         fontSize: 0.03 * windowHeight,
-        marginLeft: 0.05 * windowWidth,
-        marginBottom: 0.02 * windowHeight
+        marginBottom: 0.02 * windowHeight 
     },
     btn: {
         borderRadius: 10,
