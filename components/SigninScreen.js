@@ -9,8 +9,8 @@ import ErrorListComponent from './ErrorListComponent.js';
 
 class SigninScreen extends Component {
   state = {
-    email: 'Digite o e-mail',
-    senha: 'Digite a senha',
+    email: 'Enter the e-mail',
+    senha: 'Enter the password',
     errors: [],
   }
 
