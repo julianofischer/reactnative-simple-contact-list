@@ -18,7 +18,7 @@ class AddContactScreen extends Component {
 
     componentDidMount() {
         console.log(this.props.route.params);
-        if (this.props.route.params) {
+        if (this.props.route.params.contact) {
             let contact = this.props.route.params.contact
             console.log(contact);
             this.setState({
@@ -32,6 +32,7 @@ class AddContactScreen extends Component {
         }
 
         db.transaction(tx => {
+            //tx.executeSql("DROP TABLE contatos;")
             tx.executeSql("CREATE TABLE IF NOT EXISTS contatos (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, telefone TEXT, user_id INTEGER);");
         }, error => {
             console.log("error call back : " + JSON.stringify(error));

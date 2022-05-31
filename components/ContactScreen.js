@@ -10,16 +10,16 @@ class ContactDetailComponent extends Component {
     editPressed = () => {
         console.log('edit pressed');
         Alert.alert(
-            "Editar",
-            "Deseja mesmo editar?",
+            "Edit?",
+            "Do you really want to edit?",
             [
                 {
-                    text: "Não",
+                    text: "No",
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
                 {
-                    text: "Sim", onPress: () => {
+                    text: "Yes", onPress: () => {
                         console.log('PROPS ON EDIT')
                         console.log(this.props);
                         let contact = {
@@ -39,16 +39,16 @@ class ContactDetailComponent extends Component {
 
     deletePressed = () => {
         Alert.alert(
-            "Excluir",
-            "Deseja mesmo excluir?",
+            "Delete",
+            "Do you really want to delete?",
             [
                 {
-                    text: "Não",
+                    text: "No",
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
                 {
-                    text: "Sim", onPress: () => {
+                    text: "Yes", onPress: () => {
                         db.transaction(tx => {
                             let q = `DELETE FROM contatos WHERE id=${this.props.my_key};`
                             console.log(q);
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     },
     editBtn: {
         borderRadius: 5,
-        backgroundColor: 'blue',
+        backgroundColor: '#0373F3',
         color: 'white',
         textAlign: 'center',
         width: windowWidth * 0.18,
